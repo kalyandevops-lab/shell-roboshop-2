@@ -52,12 +52,23 @@ nodejs_setup(){
 maven_setup(){
     dnf install maven -y &>>$LOG_FILE
     VALIDATE $? "Installing Maven and Java"
-    
+
     mvn clean package &>>$LOG_FILE
     VALIDATE $? "Packaging the shipping application"
 
     mv target/shipping-1.0.jar shipping.jar &>>$LOG_FILE
     VALIDATE $? "Moving and Renaming Jar file" 
+}
+
+python_setup(){
+    dnf install python3 gcc python3-devel -y &>>$LOG_FILE
+    VALIDATE $? "Installing Python3 packages"
+    
+    pip3 install -r requirements.txt &>>$LOG_FILE
+    VALIDATE $? "Installing dependencies"
+
+    cp $SCRIPT_DIR/payment.service /etc/systemd/system/payment.service &>>$LOG_FILE
+    VALIDATE $? "Copying payment service"
 }
 
 systemd_setup(){
